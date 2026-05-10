@@ -1,0 +1,104 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isValidId(id) { 
+        return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); 
+    }
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+    function isSignedIn() { return request.auth != null; }
+    function isAdmin() { 
+      return isSignedIn() && (exists(/databases/$(database)/documents/admins/$(request.auth.uid)) || request.auth.token.email.lower() == 'bagura4a@gmail.com'); 
+    }
+
+    function isValidMenuItem(data) {
+      return data.keys().hasAll(['name', 'category', 'price', 'isAvailable', 'createdAt']) &&
+             data.name is string && data.name.size() > 0 && data.name.size() <= 100 &&
+             data.category is string && data.category in ['cocktail', 'original', 'fruity'] &&
+             (!data.keys().hasAny(['ingredients']) || (data.ingredients is string && data.ingredients.size() <= 1000)) &&
+             (!data.keys().hasAny(['imageUrl']) || (data.imageUrl is string)) &&
+             (!data.keys().hasAny(['isPopular']) || (data.isPopular is bool)) &&
+             (!data.keys().hasAny(['modifiers']) || (data.modifiers is list)) &&
+             data.price is number && data.price >= 0 &&
+             data.isAvailable is bool &&
+             data.createdAt is timestamp;
+    }
+
+    function isValidCustomer(data) {
+      return data.keys().hasAll(['name', 'phone', 'createdAt']) &&
+             data.name is string && data.name.size() > 0 && data.name.size() <= 100 &&
+             data.phone is string && data.phone.size() > 0 && data.phone.size() <= 20 &&
+             (!data.keys().hasAny(['email']) || (data.email is string && data.email.size() <= 100)) &&
+             data.createdAt is timestamp;
+    }
+
+    function isValidOrderItem(item) {
+      return item.keys().hasAll(['menuItemId', 'itemName', 'quantity', 'unitPrice', 'subtotal']) &&
+             item.menuItemId is string && item.menuItemId.size() <= 128 &&
+             item.itemName is string && item.itemName.size() <= 100 &&
+             item.quantity is number && item.quantity > 0 &&
+             item.unitPrice is number && item.unitPrice >= 0 &&
+             item.subtotal is number;
+    }
+    
+    function areValidOrderItems(items) {
+      return items is list && items.size() > 0 && items.size() <= 50 && isValidOrderItem(items[0]);
+    }
+
+    function isValidOrder(data) {
+      return data.keys().hasAll(['orderNumber', 'customerId', 'customerName', 'customerPhone', 'orderType', 'status', 'totalAmount', 'createdAt', 'updatedAt', 'items']) &&
+             data.orderNumber is number &&
+             data.customerId is string && data.customerId.size() <= 128 &&
+             data.customerName is string && data.customerName.size() <= 100 &&
+             data.customerPhone is string && data.customerPhone.size() <= 20 &&
+             data.orderType is string && data.orderType in ['walk-in', 'event', 'pickup', 'delivery'] &&
+             data.status is string && data.status in ['pending', 'confirmed', 'preparing', 'ready', 'completed', 'cancelled'] &&
+             data.totalAmount is number && data.totalAmount >= 0 &&
+             (!data.keys().hasAny(['notes']) || (data.notes is string && data.notes.size() <= 1000)) &&
+             (!data.keys().hasAny(['eventDate']) || (data.eventDate is string && data.eventDate.size() <= 50)) &&
+             (!data.keys().hasAny(['eventLocation']) || (data.eventLocation is string && data.eventLocation.size() <= 200)) &&
+             (!data.keys().hasAny(['deliveryAddress']) || (data.deliveryAddress is string && data.deliveryAddress.size() <= 500)) &&
+             data.createdAt is timestamp &&
+             data.updatedAt is timestamp &&
+             areValidOrderItems(data.items);
+    }
+
+    match /admins/{adminId} {
+      allow read: if isSignedIn() && request.auth.uid == adminId;
+    }
+
+    match /menuItems/{itemId} {
+      allow read: if true;
+      allow create: if isAdmin() && isValidId(itemId) && isValidMenuItem(incoming());
+      allow update: if isAdmin() && isValidMenuItem(incoming());
+      allow delete: if isAdmin();
+    }
+
+    match /customers/{customerId} {
+      allow read, update, delete: if isAdmin();
+      allow create: if isValidId(customerId) && 
+                       isValidCustomer(incoming()) && 
+                       incoming().createdAt == request.time &&
+                       (!incoming().keys().hasAny(['totalOrders', 'totalSpent', 'lastOrder']) || isAdmin());
+    }
+
+    match /orders/{orderId} {
+      allow read, delete: if isAdmin();
+      allow create: if isValidId(orderId) && 
+                       isValidOrder(incoming()) && 
+                       incoming().createdAt == request.time &&
+                       incoming().updatedAt == request.time &&
+                       (incoming().status == 'pending' || (isAdmin() && incoming().status == 'confirmed')) &&
+                       existsAfter(/databases/$(database)/documents/customers/$(incoming().customerId));
+      allow update: if isAdmin() && isValidOrder(incoming()) && incoming().updatedAt == request.time;
+    }
+    match /inventory/{itemId} {
+      allow read, write: if isAdmin();
+    }
+  }
+}

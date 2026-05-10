@@ -1,0 +1,124 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-primary: #FF1A1A; /* Slushify Red */
+  --color-brand-secondary: #ffffff; /* White */
+  --color-brand-accent: #00FFEE; /* Cyan Highlight */
+  --color-brand-dark: #060610; /* Dark Background */
+  
+  --font-display: "Bebas Neue", sans-serif;
+  --font-body: "Space Grotesk", sans-serif;
+  --font-script: "Great Vibes", cursive;
+}
+
+:root {
+  --primary: #FF1A1A;
+  --secondary: #ffffff;
+  --accent: #00FFEE;
+  --dark: #060610;
+  --light: #ffffff;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--dark);
+  color: var(--light);
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6, .font-display {
+  font-family: var(--font-display);
+}
+
+.font-script {
+  font-family: var(--font-script);
+}
+
+::selection {
+  background-color: var(--primary);
+  color: white;
+}
+
+@keyframes marquee-left {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes marquee-right {
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
+}
+
+.animate-marquee-left {
+  animation: marquee-left 25s linear infinite;
+  will-change: transform;
+}
+
+.animate-marquee-right {
+  animation: marquee-right 25s linear infinite;
+  will-change: transform;
+}
+
+@keyframes blob-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-blob-spin {
+  animation: blob-spin 20s linear infinite;
+  will-change: transform;
+}
+
+@keyframes float-cup {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-30px); }
+}
+
+.animate-float-cup {
+  animation: float-cup 4s ease-in-out infinite;
+  will-change: transform;
+}
+
+@keyframes particle-drift {
+  0% { transform: translateY(0) scale(1); opacity: 0; }
+  20% { opacity: 0.5; }
+  80% { opacity: 0.5; }
+  100% { transform: translateY(-100px) scale(0.5); opacity: 0; }
+}
+
+.text-gradient {
+  background: linear-gradient(to right, #ec1c24, #ff8a8a, #ffffff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 200% auto;
+  animation: bg-pan 5s linear infinite;
+}
+
+@keyframes bg-pan {
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
+
+@media (max-width: 768px) {
+  button, a {
+    min-height: 44px;
+  }
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.glass-nav {
+  background: rgba(5, 5, 5, 0.9);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}

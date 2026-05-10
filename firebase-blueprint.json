@@ -1,0 +1,79 @@
+{
+  "entities": {
+    "MenuItem": {
+      "title": "MenuItem",
+      "description": "A drink on the menu.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "category": { "type": "string", "enum": ["cocktail", "original", "fruity"] },
+        "ingredients": { "type": "string" },
+        "price": { "type": "number" },
+        "isAvailable": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "category", "price", "isAvailable", "createdAt"]
+    },
+    "Customer": {
+      "title": "Customer",
+      "description": "Customer details collected during order.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "phone": { "type": "string" },
+        "email": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "phone", "createdAt"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "A customer order.",
+      "type": "object",
+      "properties": {
+        "orderNumber": { "type": "number" },
+        "customerId": { "type": "string" },
+        "customerName": { "type": "string" },
+        "customerPhone": { "type": "string" },
+        "orderType": { "type": "string", "enum": ["walk-in", "event"] },
+        "status": { "type": "string", "enum": ["pending", "confirmed", "preparing", "ready", "completed", "cancelled"] },
+        "totalAmount": { "type": "number" },
+        "notes": { "type": "string" },
+        "eventDate": { "type": "string" },
+        "eventLocation": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "items": { "type": "array" }
+      },
+      "required": ["orderNumber", "customerId", "customerName", "customerPhone", "orderType", "status", "totalAmount", "createdAt", "updatedAt", "items"]
+    },
+    "AdminProfile": {
+      "title": "AdminProfile",
+      "description": "Admin users.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "role": { "type": "string", "enum": ["staff", "manager", "owner"] }
+      },
+      "required": ["role"]
+    }
+  },
+  "firestore": {
+    "menuItems/{itemId}": {
+      "schema": "MenuItem",
+      "description": "Menu items"
+    },
+    "customers/{customerId}": {
+      "schema": "Customer",
+      "description": "Customers"
+    },
+    "orders/{orderId}": {
+      "schema": "Order",
+      "description": "Orders placed by customers"
+    },
+    "admins/{adminId}": {
+      "schema": "AdminProfile",
+      "description": "Admin profiles"
+    }
+  }
+}
