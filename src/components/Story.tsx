@@ -29,9 +29,12 @@ export default function Story() {
   const flavorStat = useCounter(15);
   const locStat = useCounter(2023, 2);
   const cupStat = useCounter(10);
+  
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "100px" });
 
   return (
-    <section id="about" className="py-24 text-white overflow-hidden bg-[#0A0A0A]">
+    <section id="about" ref={ref} className="py-24 text-white overflow-hidden bg-[#0A0A0A]">
       <div className="max-w-7xl mx-auto px-6 md:px-12 grid md:grid-cols-2 gap-16 items-center">
         
         {/* Visual Left (on desktop) */}
@@ -45,16 +48,18 @@ export default function Story() {
           {/* Video Container */}
           <div className="bg-brand-primary/10 rounded-[30px] -rotate-3 border border-brand-primary/50 shadow-[0_0_50px_rgba(236,28,36,0.2)] overflow-hidden relative z-10 w-full aspect-[16/9] mx-auto">
              {/* Assuming user uploads 'blue-slushy.mp4' to public folder */}
-             <video 
-               autoPlay 
-               loop 
-               muted 
-               playsInline
-               className="w-full h-full object-cover"
-               src="/blue-slushy.mp4"
-             >
-               <p>Your browser does not support the video tag.</p>
-             </video>
+             {isInView && (
+               <video 
+                 autoPlay 
+                 loop 
+                 muted 
+                 playsInline
+                 className="w-full h-full object-cover"
+                 src="/blue-slushy.mp4"
+               >
+                 <p>Your browser does not support the video tag.</p>
+               </video>
+             )}
              
              {/* Gradient overlay */}
              <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
