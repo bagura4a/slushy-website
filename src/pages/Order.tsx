@@ -195,22 +195,22 @@ export default function Order() {
     const lowerName = name.toLowerCase();
     
     // Blue Drinks
-    if (lowerName.includes('blue')) return '/images/slushy_original.png';
+    if (lowerName.includes('blue')) return '/images/slushy_original.webp';
     
     // Purple / Dark Drinks
-    if (lowerName.includes('grape') || lowerName.includes('illusion')) return '/images/slushy_purple.png';
+    if (lowerName.includes('grape') || lowerName.includes('illusion')) return '/images/slushy_purple.webp';
     
     // Pink / Light Red Drinks
-    if (lowerName.includes('pink') || lowerName.includes('watermelon')) return '/images/slushy_pink.png';
+    if (lowerName.includes('pink') || lowerName.includes('watermelon')) return '/images/slushy_pink.webp';
     
     // Red / Strawberry Drinks
-    if (lowerName.includes('strawberry') || lowerName.includes('red') || lowerName.includes('sex') || lowerName.includes('margarita')) return '/images/slushy_cocktail.png';
+    if (lowerName.includes('strawberry') || lowerName.includes('red') || lowerName.includes('sex') || lowerName.includes('margarita')) return '/images/slushy_cocktail.webp';
     
     // Yellow / Orange / Tropical Drinks
-    if (lowerName.includes('mango') || lowerName.includes('pineapple') || lowerName.includes('passion') || lowerName.includes('mimosa') || lowerName.includes('pornstar') || lowerName.includes('lemon') || lowerName.includes('pina')) return '/images/slushy_fruity.png';
+    if (lowerName.includes('mango') || lowerName.includes('pineapple') || lowerName.includes('passion') || lowerName.includes('mimosa') || lowerName.includes('pornstar') || lowerName.includes('lemon') || lowerName.includes('pina')) return '/images/slushy_fruity.webp';
 
     // Fallback based on hash if no keywords match
-    const images = ['/images/slushy_cocktail.png', '/images/slushy_original.png', '/images/slushy_fruity.png', '/images/slushy_purple.png', '/images/slushy_pink.png'];
+    const images = ['/images/slushy_cocktail.webp', '/images/slushy_original.webp', '/images/slushy_fruity.webp', '/images/slushy_purple.webp', '/images/slushy_pink.webp'];
     const hash = name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
     return images[hash % images.length];
   };
