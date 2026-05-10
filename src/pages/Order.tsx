@@ -5,6 +5,12 @@ import { db } from '../lib/firebase';
 import { Store, Truck, ArrowRight, ArrowLeft, Plus, Minus, CheckCircle2, ShoppingBag, X, Star, DollarSign } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
+import defaultCocktail from '../../public/images/slushy_cocktail.webp';
+import defaultOriginal from '../../public/images/slushy_original.webp';
+import defaultFruity from '../../public/images/slushy_fruity.webp';
+import defaultPurple from '../../public/images/slushy_purple.webp';
+import defaultPink from '../../public/images/slushy_pink.webp';
+
 type Modifier = { name: string; price: number };
 type CartItem = {
   cartItemId: string;
@@ -195,22 +201,22 @@ export default function Order() {
     const lowerName = name.toLowerCase();
     
     // Blue Drinks
-    if (lowerName.includes('blue')) return '/images/slushy_original.webp';
+    if (lowerName.includes('blue')) return defaultOriginal;
     
     // Purple / Dark Drinks
-    if (lowerName.includes('grape') || lowerName.includes('illusion')) return '/images/slushy_purple.webp';
+    if (lowerName.includes('grape') || lowerName.includes('illusion')) return defaultPurple;
     
     // Pink / Light Red Drinks
-    if (lowerName.includes('pink') || lowerName.includes('watermelon')) return '/images/slushy_pink.webp';
+    if (lowerName.includes('pink') || lowerName.includes('watermelon')) return defaultPink;
     
     // Red / Strawberry Drinks
-    if (lowerName.includes('strawberry') || lowerName.includes('red') || lowerName.includes('sex') || lowerName.includes('margarita')) return '/images/slushy_cocktail.webp';
+    if (lowerName.includes('strawberry') || lowerName.includes('red') || lowerName.includes('sex') || lowerName.includes('margarita')) return defaultCocktail;
     
     // Yellow / Orange / Tropical Drinks
-    if (lowerName.includes('mango') || lowerName.includes('pineapple') || lowerName.includes('passion') || lowerName.includes('mimosa') || lowerName.includes('pornstar') || lowerName.includes('lemon') || lowerName.includes('pina')) return '/images/slushy_fruity.webp';
+    if (lowerName.includes('mango') || lowerName.includes('pineapple') || lowerName.includes('passion') || lowerName.includes('mimosa') || lowerName.includes('pornstar') || lowerName.includes('lemon') || lowerName.includes('pina')) return defaultFruity;
 
     // Fallback based on hash if no keywords match
-    const images = ['/images/slushy_cocktail.webp', '/images/slushy_original.webp', '/images/slushy_fruity.webp', '/images/slushy_purple.webp', '/images/slushy_pink.webp'];
+    const images = [defaultCocktail, defaultOriginal, defaultFruity, defaultPurple, defaultPink];
     const hash = name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
     return images[hash % images.length];
   };
